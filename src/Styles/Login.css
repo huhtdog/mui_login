@@ -1,0 +1,47 @@
+html, #root {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    margin: 0;
+    display: flex;
+    place-items: center;
+    min-width: 320px;
+    min-height: 100vh;
+}
+
+body {
+    margin: 0;
+    display: flex;
+    place-items: center;
+    min-width: 320px;
+    min-height: 100vh;
+}
+
+@media (orientation: landscape) {
+    #root {
+        flex-direction: row;
+        width: 100%; /* Reset width to 100% */
+        overflow-x: auto; /* Allow horizontal scrolling */
+    }
+
+    .MuiContainer-root {
+        width: auto;
+        margin-left: 40px;
+        margin-right: 40px;
+    }
+
+    .MuiTextField-root {
+        margin-right: 40px;
+    }
+
+    .MuiButton-root {
+        margin-left: 40px;
+    }
+
+    .orText {
+        display: none;
+    }
+}
