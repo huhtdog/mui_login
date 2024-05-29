@@ -1,19 +1,22 @@
+// Login.js
+import { Link, useNavigate } from 'react-router-dom';
 import { Container, Box, Paper, TextField, Button, Typography, IconButton, InputAdornment } from "@mui/material";
-import { useState } from 'react'; // Correct import statement for useState
+import { useState } from 'react';
 import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
 import LoginTwoToneIcon from '@mui/icons-material/LoginTwoTone';
-import { Visibility, VisibilityOff } from '@mui/icons-material'; // Import icons here
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import '../Styles/Login.css';
 
 export default function Login() {
   const [isError, setIsError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate(); // Add useNavigate hook
 
   const validate = () => {
     // Implement your validation logic here
-    // For example, check if the email and password are valid
     // If valid, proceed with login, otherwise set isError to true
-    setIsError(true); // For demonstration, setting error to true always
+    setIsError(false); // For demonstration, assuming validation passes
+    navigate('/'); // Navigate to home or desired route on successful login
   }
 
   return (
@@ -54,9 +57,16 @@ export default function Login() {
         <Typography align="center">or</Typography>
       </Box>
       <Box sx={{ p: 1 }}>
-      <Button size="large" fullWidth variant="contained" endIcon={<PersonAddAltRoundedIcon />}>
-  Sign up
-</Button>
+        <Button
+          component={Link} // Wrap the button with Link
+          to="/Signup"
+          size="large"
+          fullWidth
+          variant="contained"
+          endIcon={<PersonAddAltRoundedIcon />}
+        >
+          Sign up
+        </Button>
       </Box>
     </Container>
   );
