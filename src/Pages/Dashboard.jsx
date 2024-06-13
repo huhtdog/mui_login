@@ -21,9 +21,8 @@ import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { mainListItems } from '../Components/NavList';
 import Copyright from '../Components/Copyright';
-import { Outlet } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-import { Avatar, Menu, MenuItem } from '@mui/material';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { Avatar, Menu, MenuItem, Button } from '@mui/material';
 
 const drawerWidth = 240;
 
@@ -99,6 +98,8 @@ export default function Dashboard() {
         navigate("/", { state: { value: "value" } });
     };
 
+   
+
     const theme = createTheme({
         palette: {
             mode: darkMode ? 'dark' : 'light',
@@ -139,11 +140,7 @@ export default function Dashboard() {
                         <IconButton color="inherit" onClick={handleDarkModeToggle}>
                             {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
                         </IconButton>
-                        <IconButton color="inherit">
-                            <Badge badgeContent={4} color="secondary">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
+                       
                         <IconButton
                             edge="end"
                             color="inherit"
@@ -198,32 +195,11 @@ export default function Dashboard() {
                     }}
                 >
                     <Toolbar />
-                    {/* Main Content */}
                     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
                         <Grid container spacing={3}>
-                            {/* Patient Information */}
-                            <Grid item xs={12} md={4} lg={3}>
-                                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                                    <Typography variant="h6">Patient Information</Typography>
-                                    {/* Placeholder for patient information component */}
-                                </Paper>
+                        <Outlet /> {/* This is where the routed content will be displayed */}                    
                             </Grid>
-                            {/* Appointment Scheduling */}
-                            <Grid item xs={12} md={8} lg={9}>
-                                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                                    <Typography variant="h6">Appointment Scheduling</Typography>
-                                    {/* Placeholder for appointment scheduling component */}
-                                </Paper>
-                            </Grid>
-                            {/* Doctor Listings */}
-                            <Grid item xs={12}>
-                                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                                    <Typography variant="h6">Doctor Listings</Typography>
-                                    {/* Placeholder for doctor listings component */}
-                                </Paper>
-                            </Grid>
-                        </Grid>
-                        <Copyright sx={{ pt: 4 }} />
+                            <Copyright/>
                     </Container>
                     {/* End of Main Content */}
                 </Box>

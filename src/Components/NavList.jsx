@@ -22,36 +22,36 @@ export const mainListItems = (
                 <ListItemText primary="Dashboard" />
             </ListItemButton>
         </Link>
-        <Link to="/dashboard/patients" style={styles}>
+        <Link to="/dashboard/staffAllocation" style={styles}>
             <ListItemButton>
                 <ListItemIcon>
                     <PeopleIcon />
                 </ListItemIcon>
-                <ListItemText primary="Patients" />
+                <ListItemText primary="Staff Allocation" />
             </ListItemButton>
         </Link>
-        <Link to="/dashboard/appointments" style={styles}>
+        <Link to="/dashboard/patientmedication" style={styles}>
             <ListItemButton>
                 <ListItemIcon>
                     <CalendarTodayIcon />
                 </ListItemIcon>
-                <ListItemText primary="Appointments" />
+                <ListItemText primary="Patient Medication" />
             </ListItemButton>
         </Link>
-        <Link to="/dashboard/doctors" style={styles}>
+        <Link to="/dashboard/supplies" style={styles}>
             <ListItemButton>
                 <ListItemIcon>
                     <LocalHospitalIcon />
                 </ListItemIcon>
-                <ListItemText primary="Doctors" />
+                <ListItemText primary="Supplies"     />
             </ListItemButton>
         </Link>
-        <Link to="/dashboard/reports" style={styles}>
+        <Link to="/dashboard/Suppliers" style={styles}>
             <ListItemButton>
                 <ListItemIcon>
                     <BarChartIcon />
                 </ListItemIcon>
-                <ListItemText primary="Reports" />
+                <ListItemText primary="Suppliers" />
             </ListItemButton>
         </Link>
         <Link to="/dashboard/settings" style={styles}>
