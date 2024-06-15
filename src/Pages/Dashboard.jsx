@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect } from 'react';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
@@ -95,8 +96,18 @@ export default function Dashboard() {
     };
 
     const logout = () => {
+        // Clear the localStorage
+    localStorage.clear();
+
         navigate("/", { state: { value: "value" } });
     };
+
+    useEffect(() => {
+        const authTokenString = localStorage.getItem('sb-yavdfdgkadqwybjcpjyo-auth-token');
+        if (!authTokenString) {
+            navigate("/", { state: { value: "value" } });
+        }
+    }, []); // Empty dependency array ensures the effect runs only once on component mount
 
    
 

@@ -8,6 +8,10 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import MedicationIcon from '@mui/icons-material/Medication';
+import SchoolIcon from '@mui/icons-material/School';
+import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
+import DescriptionIcon from '@mui/icons-material/Description'; // Import the new icon for employment contract
 import { Link } from 'react-router-dom';
 
 const styles = { textDecoration: "none", color: "inherit" };
@@ -30,7 +34,7 @@ export const mainListItems = (
                 <ListItemText primary="Staff Allocation" />
             </ListItemButton>
         </Link>
-        <Link to="/dashboard/patientmedication" style={styles}>
+        <Link to="/dashboard/patientMedication" style={styles}>
             <ListItemButton>
                 <ListItemIcon>
                     <CalendarTodayIcon />
@@ -43,10 +47,10 @@ export const mainListItems = (
                 <ListItemIcon>
                     <LocalHospitalIcon />
                 </ListItemIcon>
-                <ListItemText primary="Supplies"     />
+                <ListItemText primary="Supplies" />
             </ListItemButton>
         </Link>
-        <Link to="/dashboard/Suppliers" style={styles}>
+        <Link to="/dashboard/suppliers" style={styles}>
             <ListItemButton>
                 <ListItemIcon>
                     <BarChartIcon />
@@ -54,13 +58,37 @@ export const mainListItems = (
                 <ListItemText primary="Suppliers" />
             </ListItemButton>
         </Link>
-        <Link to="/dashboard/settings" style={styles}>
+        <Link to="/dashboard/pharmaceuticalSupplies" style={styles}>
             <ListItemButton>
                 <ListItemIcon>
-                    <SettingsIcon />
+                    <MedicationIcon />
                 </ListItemIcon>
-                <ListItemText primary="Settings" />
+                <ListItemText primary="Pharmaceutical Supplies" />
             </ListItemButton>
         </Link>
+        <Link to="/dashboard/qualification" style={styles}>
+            <ListItemButton>
+                <ListItemIcon>
+                    <SchoolIcon />
+                </ListItemIcon>
+                <ListItemText primary="Qualification" />
+            </ListItemButton>
+        </Link>
+        <Link to="/dashboard/workExperience" style={styles}>
+            <ListItemButton>
+                <ListItemIcon>
+                    <WorkOutlineIcon />
+                </ListItemIcon>
+                <ListItemText primary="Work Experience" />
+            </ListItemButton>
+        </Link> 
+        <Link to="/dashboard/employmentContract" style={styles}>
+            <ListItemButton>
+                <ListItemIcon>
+                    <DescriptionIcon /> {/* Use the new icon here */}
+                </ListItemIcon>
+                <ListItemText primary="Employment Contract" />
+            </ListItemButton>
+        </Link> 
     </React.Fragment>
 );

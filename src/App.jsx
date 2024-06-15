@@ -9,7 +9,7 @@ import Supplietrs from './Pages/Suppliers';
 import Supplies from './Pages/Supplies';
 import PatientMedication from './Pages/PatientMedication';
 import StaffAllocation from './Pages/StaffAllocation';
-import Settings from './Pages/Settings';
+import Qualification from './Pages/Qualification';
 import Staff from './MainPages/Staff';
 import Patient from './MainPages/Patient';
 import PatientAllocation from './MainPages/PatientAllocation';
@@ -17,6 +17,9 @@ import Appointment from './MainPages/Appointment';
 import Ward from './MainPages/Ward';
 import WardRequisition from './MainPages/WardRequisition';
 import Suppliers from './Pages/Suppliers';
+import PharmaceuticalSupplies from './Pages/PharmaceuticalSupplies';
+import WorkExperience from './Pages/WorkExperience';
+import EmploymentContract from './Pages/EmploymentContract';
 
 
 
@@ -73,8 +76,8 @@ const router = createBrowserRouter([
         element: <Suppliers />
       },
       {
-        path: "settings",
-        element: <Settings />
+        path: "qualification",
+        element: <Qualification />
       },
       {
         path: "StaffAllocation",
@@ -88,6 +91,21 @@ const router = createBrowserRouter([
         path: "patientMedication",
         element: <PatientMedication />
       },
+      
+      {
+         path: "pharmaceuticalSupplies",
+         element: <PharmaceuticalSupplies /> 
+      },
+      {
+        path: "workExperience",
+        element: <WorkExperience /> 
+     },
+     {
+      path: "employmentContract",
+      element: <EmploymentContract /> 
+   },
+
+      
     ]
   }
 ]);
