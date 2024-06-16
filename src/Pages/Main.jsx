@@ -109,14 +109,14 @@ export default function Main() {
                 </Grid>
                 {/* Fourth Row */}
                 <Grid item xs={12} md={6}>
-                    <Link to="/dashboard/main/button7" style={{ textDecoration: 'none' }}>
+                    <Link to="/dashboard/main/bookappointments" style={{ textDecoration: 'none' }}>
                     <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
                         <Button
                             variant="contained"
                             sx={{ bgcolor: '#ADFF2F', height: '200px' }}
                             fullWidth
                         >
-                            <MedicationIcon /> Button 7
+                            <MedicationIcon /> Book Appointments
                         </Button>
                     </Paper>
                     </Link>

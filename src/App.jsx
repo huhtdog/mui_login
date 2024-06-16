@@ -17,9 +17,10 @@ import Appointment from './MainPages/Appointment';
 import Ward from './MainPages/Ward';
 import WardRequisition from './MainPages/WardRequisition';
 import Suppliers from './Pages/Suppliers';
-import PharmaceuticalSupplies from './Pages/PharmaceuticalSupplies';
+import PharmaceuticalSupplies from './Pages/pharmaceuticalsupplies';
 import WorkExperience from './Pages/WorkExperience';
 import EmploymentContract from './Pages/EmploymentContract';
+import BookAppointments from './MainPages/BookAppointments';
 
 
 
@@ -68,6 +69,10 @@ const router = createBrowserRouter([
         {
           path: "wardrequisition",
           element: <WardRequisition />
+        },
+        {
+          path: "bookappointments",
+          element: <BookAppointments />
         }
       ]
     },
@@ -104,7 +109,6 @@ const router = createBrowserRouter([
       path: "employmentContract",
       element: <EmploymentContract /> 
    },
-
       
     ]
   }

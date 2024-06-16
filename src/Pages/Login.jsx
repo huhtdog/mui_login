@@ -46,7 +46,7 @@ export default function Login() {
       }}
     >
       <Box sx={{ textAlign: 'center', mb: 2 }}>
-        <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'green' }}>Hospital Management</Typography>
+        <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'green' }}>Wellmeadows Hospital</Typography>
       </Box>
       {isError && (
         <Box sx={{ mb: 2 }}>
