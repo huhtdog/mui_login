@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Paper, TextField, Button, Grid, Typography, MenuItem } from '@mui/material';
 import { createClient } from '@supabase/supabase-js';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 export default function BookAppointments() {
-
   const supabaseUrl = 'https://ytegbeireyjzmurrpbuz.supabase.co'; // Replace with your Supabase URL
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl0ZWdiZWlyZXlqem11cnJwYnV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTgxMTQ4ODYsImV4cCI6MjAzMzY5MDg4Nn0.0R9UADmHOMauVXfpDiCBFLLlv7WWsgA8rf1I8IIaBig'; // Replace with your Supabase key
   const supabase = createClient(supabaseUrl, supabaseKey);
 
+  const navigate = useNavigate(); // Initialize useNavigate hook
 
   const [formData, setFormData] = useState({
     name: '',
@@ -15,8 +16,6 @@ export default function BookAppointments() {
     appointmentDate: '',
     appointmentTime: '',
   });
-
-  
 
   const [patientNames, setPatientNames] = useState([]);
 
@@ -69,9 +68,10 @@ export default function BookAppointments() {
         appointmentDate: '',
         appointmentTime: '',
       });
+      // Navigate to the waiting list component
+      navigate('/waitinglist');
     }
   };
-
 
   return (
     <Paper sx={{ p: 4, maxWidth: 500, margin: 'auto', mt: 5 }}>
@@ -81,7 +81,7 @@ export default function BookAppointments() {
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-          <TextField
+            <TextField
               select
               fullWidth
               label="Name of the Patient"

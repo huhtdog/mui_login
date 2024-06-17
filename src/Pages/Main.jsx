@@ -1,140 +1,157 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Grid, Paper, Button } from '@mui/material';
-import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
-import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
-import HealingIcon from '@mui/icons-material/Healing';
-import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
-import MasksIcon from '@mui/icons-material/Masks';
-import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
+import PatientIcon from '@mui/icons-material/Person';
+import PatientAllocationIcon from '@mui/icons-material/AssignmentInd';
+import AppointmentIcon from '@mui/icons-material/Event';
+import WardIcon from '@mui/icons-material/Business';
+import WardRequisitionIcon from '@mui/icons-material/Assignment';
+import BookAppointmentsIcon from '@mui/icons-material/EventNote';
 import MedicationIcon from '@mui/icons-material/Medication';
-import VaccinesIcon from '@mui/icons-material/Vaccines';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import StaffIcon from '@mui/icons-material/AccountCircle';
+
 
 export default function Main() {
-    
     const [showGrid, setShowGrid] = useState(true);
     const location = useLocation();
-    const wew = 0;
 
     useEffect(() => {
         // Determine if the outlet should be displayed based on the current route
         setShowGrid(location.pathname === '/dashboard');
     }, [location.pathname]);
 
+    const iconStyles = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        fontSize: '8rem',
+        color: 'rgba(255, 255, 255, 0.3)' // Adjust the opacity to make it look like a background
+    };
+
+    const buttonStyles = {
+        position: 'relative',
+        height: '200px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+    };
+
     return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             {showGrid && (
-            <Grid container spacing={3}>
-                {/* First Row */}
-                <Grid item xs={12} md={6}>
-                    <Link to="/dashboard/main/staff" style={{ textDecoration: 'none' }}>
-                        <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
+                <Grid container spacing={3}>
+                    {/* First Row */}
+                    <Grid item xs={12} md={6}>
+                        <Link to="/dashboard/main/staff" style={{ textDecoration: 'none' }}>
+                            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
                             <Button
                                 variant="contained"
-                                sx={{ bgcolor: '#FFB6C1', height: '200px' }}
-                                fullWidth   
-                            >
-                                <LocalHospitalIcon/> Staff
+                                 sx={{ ...buttonStyles, bgcolor: '#FFB6C1' }}
+                                 fullWidth
+                                >
+                                <StaffIcon sx={iconStyles} />
+                                 <StaffIcon/> Staff
                             </Button>
-                        </Paper>
-                    </Link>
+
+                            </Paper>
+                        </Link>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                        <Link to="/dashboard/main/patient" style={{ textDecoration: 'none' }}>
+                            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
+                            <Button
+    variant="contained"
+    sx={{ ...buttonStyles, bgcolor: '#FFD700' }}
+    fullWidth
+>
+    <PatientIcon sx={iconStyles} />
+    <PatientIcon /> Patient
+</Button>
+
+                            </Paper>
+                        </Link>
+                    </Grid>
+                    {/* Second Row */}
+                    <Grid item xs={12} md={6}>
+                        <Link to="/dashboard/main/patientAllocation" style={{ textDecoration: 'none' }}>
+                            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
+                            <Button
+    variant="contained"
+    sx={{ ...buttonStyles, bgcolor: '#20B2AA' }}
+    fullWidth
+>
+    <PatientAllocationIcon sx={iconStyles} />
+    <PatientAllocationIcon  /> Patient Allocation
+</Button>
+
+                            </Paper>
+                        </Link>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                        <Link to="/dashboard/main/appointment" style={{ textDecoration: 'none' }}>
+                            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
+                            <Button
+    variant="contained"
+    sx={{ ...buttonStyles, bgcolor: '#87CEFA' }}
+    fullWidth
+>
+    <AppointmentIcon sx={iconStyles} />
+    <AppointmentIcon /> Appointment
+</Button>
+
+                            </Paper>
+                        </Link>
+                    </Grid>
+                    {/* Third Row */}
+                    <Grid item xs={12} md={6}>
+                        <Link to="/dashboard/main/ward" style={{ textDecoration: 'none' }}>
+                            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
+                            <Button
+    variant="contained"
+    sx={{ ...buttonStyles, bgcolor: '#FF69B4' }}
+    fullWidth
+>
+    <WardIcon sx={iconStyles} />
+    <WardIcon /> Ward
+</Button>
+
+                            </Paper>
+                        </Link>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                        <Link to="/dashboard/main/wardRequisition" style={{ textDecoration: 'none' }}>
+                            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
+                            <Button
+    variant="contained"
+    sx={{ ...buttonStyles, bgcolor: '#B0E0E6' }}
+    fullWidth
+>
+    <WardRequisitionIcon sx={iconStyles} />
+    <WardRequisitionIcon /> Ward Requisition
+</Button>
+
+                            </Paper>
+                        </Link>
+                    </Grid>
+                    {/* Fourth Row */}
+                    <Grid item xs={12} md={6}>
+                        <Link to="/dashboard/main/bookappointments" style={{ textDecoration: 'none' }}>
+                            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
+                            <Button
+    variant="contained"
+    sx={{ ...buttonStyles, bgcolor: '#ADFF2F' }}
+    fullWidth
+>
+    <BookAppointmentsIcon sx={iconStyles} />
+    <BookAppointmentsIcon /> Book Appointments
+</Button>
+
+                            </Paper>
+                        </Link>
+                    </Grid>
+                    
                 </Grid>
-                <Grid item xs={12} md={6}>
-                    <Link to="/dashboard/main/patient" style={{ textDecoration: 'none' }}>
-                    <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
-                        <Button
-                            variant="contained"
-                            sx={{ bgcolor: '#FFD700', height: '200px' }}
-                            fullWidth
-                        >
-                            <MedicalServicesIcon /> PATIENT
-                        </Button>
-                    </Paper>
-                    </Link>
-                </Grid>
-                {/* Second Row */}
-                <Grid item xs={12} md={6}>
-                    <Link to="/dashboard/main/patientAllocation" style={{ textDecoration: 'none' }}>
-                    <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
-                        <Button
-                            variant="contained"
-                            sx={{ bgcolor: '#20B2AA', height: '200px' }}
-                            fullWidth
-                        >
-                            <HealingIcon /> patient allocation
-                        </Button>
-                    </Paper>
-                    </Link>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                    <Link to="/dashboard/main/appointment" style={{ textDecoration: 'none' }}>
-                    <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
-                        <Button
-                            variant="contained"
-                            sx={{ bgcolor: '#87CEFA', height: '200px' }}
-                            fullWidth
-                        >
-                            <MonitorHeartIcon /> appointment
-                        </Button>
-                    </Paper>
-                    </Link>
-                </Grid>
-                {/* Third Row */}
-                <Grid item xs={12} md={6}>
-                     <Link to="/dashboard/main/ward" style={{ textDecoration: 'none' }}>
-                    <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
-                        <Button
-                            variant="contained"
-                            sx={{ bgcolor: '#FF69B4', height: '200px' }}
-                            fullWidth
-                        >
-                            <MasksIcon /> ward
-                        </Button>
-                    </Paper>
-                    </Link>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                    <Link to="/dashboard/main/wardRequisition" style={{ textDecoration: 'none' }}>
-                    <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
-                        <Button
-                            variant="contained"
-                            sx={{ bgcolor: '#B0E0E6', height: '200px' }}
-                            fullWidth
-                        >
-                            <HealthAndSafetyIcon /> Ward Requisition
-                        </Button>
-                    </Paper>
-                    </Link>
-                </Grid>
-                {/* Fourth Row */}
-                <Grid item xs={12} md={6}>
-                    <Link to="/dashboard/main/bookappointments" style={{ textDecoration: 'none' }}>
-                    <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
-                        <Button
-                            variant="contained"
-                            sx={{ bgcolor: '#ADFF2F', height: '200px' }}
-                            fullWidth
-                        >
-                            <MedicationIcon /> Book Appointments
-                        </Button>
-                    </Paper>
-                    </Link>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                    <Link to="/dashboard/main/button8" style={{ textDecoration: 'none' }}>
-                    <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
-                        <Button
-                            variant="contained"
-                            sx={{ bgcolor: '#FF6347', height: '200px' }}
-                            fullWidth
-                        >
-                            <VaccinesIcon /> Button 8
-                        </Button>
-                    </Paper>
-                    </Link>
-                </Grid>
-            </Grid>
             )}
             <Outlet />
         </Container>

@@ -125,7 +125,6 @@ function WorkExperience() {
             <Table>
                 <TableHead>
                     <TableRow>
-                        <TableCell>Experience ID</TableCell>
                         <TableCell>Staff Number</TableCell>
                         <TableCell>Position</TableCell>
                         <TableCell>Start Date</TableCell>
@@ -139,7 +138,6 @@ function WorkExperience() {
                 <TableBody>
                     {experiences.map((experience) => (
                         <TableRow key={experience.experience_id}>
-                            <TableCell>{experience.experience_id}</TableCell>
                             <TableCell>{experience.staff_number}</TableCell>
                             <TableCell>{experience.position}</TableCell>
                             <TableCell>{experience.start_date}</TableCell>
