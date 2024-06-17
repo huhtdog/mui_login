@@ -15,12 +15,15 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Alert,
 } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
 
+const supabaseUrl = 'https://ytegbeireyjzmurrpbuz.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl0ZWdiZWlyZXlqem11cnJwYnV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTgxMTQ4ODYsImV4cCI6MjAzMzY5MDg4Nn0.0R9UADmHOMauVXfpDiCBFLLlv7WWsgA8rf1I8IIaBig';
+const supabase = createClient(supabaseUrl, supabaseKey);
+
 const StaffAllocation = () => {
-  const [allocations, setAllocations] = useState([]);
+  const [staffAllocations, setStaffAllocations] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedAllocation, setSelectedAllocation] = useState(null);
   const [formValues, setFormValues] = useState({
@@ -29,28 +32,22 @@ const StaffAllocation = () => {
     shift: '',
     ward_number: '',
   });
-  const [error, setError] = useState('');
-
-  const supabaseUrl = 'https://ytegbeireyjzmurrpbuz.supabase.co';
-  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl0ZWdiZWlyZXlqem11cnJwYnV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTgxMTQ4ODYsImV4cCI6MjAzMzY5MDg4Nn0.0R9UADmHOMauVXfpDiCBFLLlv7WWsgA8rf1I8IIaBig';
-  const supabase = createClient(supabaseUrl, supabaseKey);
-
-  // Retrieve the authentication token from localStorage
-  const authTokenString = localStorage.getItem('sb-yavdfdgkadqwybjcpjyo-auth-token');
-  const authToken = JSON.parse(authTokenString);
-  const userEmail = authToken.user.email;
 
   useEffect(() => {
-    fetchAllocations();
+    fetchStaffAllocations();
   }, []);
 
-  const fetchAllocations = async () => {
+  const fetchStaffAllocations = async () => {
     try {
-      const { data, error } = await supabase.from('staffallocation').select('*');
-      if (error) throw error;
-      setAllocations(data);
+      const { data, error } = await supabase
+        .from('staffallocation')
+        .select('*');
+      if (error) {
+        throw error;
+      }
+      setStaffAllocations(data);
     } catch (error) {
-      console.error('Error fetching allocations:', error.message);
+      console.error('Error fetching staff allocations:', error.message);
     }
   };
 
@@ -76,7 +73,6 @@ const StaffAllocation = () => {
 
   const handleDialogClose = () => {
     setOpenDialog(false);
-    setError('');
   };
 
   const handleChange = (e) => {
@@ -85,33 +81,30 @@ const StaffAllocation = () => {
 
   const handleFormSubmit = async () => {
     try {
-      const { data: existingData, error: fetchError } = await supabase
-        .from('staffallocation')
-        .select('*')
-        .eq('staff_number', formValues.staff_number);
-
-      if (fetchError) throw fetchError;
-      if (existingData.length > 0 && !selectedAllocation) {
-        setError('Staff number already exists. Please use a different staff number.');
-        return;
-      }
-
       if (!selectedAllocation) {
-        // Create new allocation
-        const { data, error } = await supabase.from('staffallocation').insert([formValues]);
-        if (error) throw error;
-        console.log('Inserted:', data);
+        // Create new staff allocation
+        const { data, error } = await supabase
+          .from('staffallocation')
+          .insert([formValues]);
+        if (error) {
+          throw error;
+        }
       } else {
-        // Update existing allocation
-        const { data, error } = await supabase.from('staffallocation').update(formValues).eq('staff_number', selectedAllocation.staff_number);
-        if (error) throw error;
-        console.log('Updated:', data);
+        // Update existing staff allocation
+        const { data, error } = await supabase
+          .from('staffallocation')
+          .update(formValues)
+          .eq('staff_number', selectedAllocation.staff_number)
+          .eq('ward_number', selectedAllocation.ward_number);
+        if (error) {
+          throw error;
+        }
       }
       setOpenDialog(false);
-      fetchAllocations();
+      fetchStaffAllocations();
       clearForm();
     } catch (error) {
-      console.error('Error saving allocation:', error.message);
+      console.error('Error saving staff allocation:', error.message);
     }
   };
 
@@ -126,25 +119,28 @@ const StaffAllocation = () => {
 
   const handleDelete = async (allocation) => {
     try {
-      const { data, error } = await supabase.from('staffallocation').delete().eq('staff_number', allocation.staff_number);
-      if (error) throw error;
-      console.log('Deleted:', data);
-      fetchAllocations();
+      const { data, error } = await supabase
+        .from('staffallocation')
+        .delete()
+        .eq('staff_number', allocation.staff_number)
+        .eq('ward_number', allocation.ward_number);
+      if (error) {
+        throw error;
+      }
+      fetchStaffAllocations();
     } catch (error) {
-      console.error('Error deleting allocation:', error.message);
+      console.error('Error deleting staff allocation:', error.message);
     }
   };
 
   return (
     <Container>
       <Typography variant="h4" gutterBottom>
-        Staff Allocations
+        Staff Allocation
       </Typography>
-      {userEmail === 'admin@user.com' && (
-        <Button variant="contained" color="primary" onClick={() => handleDialogOpen(null)}>
-          Add Allocation
-        </Button>
-      )}
+      <Button variant="contained" color="primary" onClick={() => handleDialogOpen(null)}>
+        Add Staff Allocation
+      </Button>
       <Table>
         <TableHead>
           <TableRow>
@@ -152,40 +148,59 @@ const StaffAllocation = () => {
             <TableCell>Position</TableCell>
             <TableCell>Shift</TableCell>
             <TableCell>Ward Number</TableCell>
-            {userEmail === 'admin@user.com' && (
-              <TableCell>Actions</TableCell>
-            )}
+            <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {allocations.map((allocation) => (
-            <TableRow key={allocation.staff_number}>
+          {staffAllocations.map((allocation) => (
+            <TableRow key={`${allocation.staff_number}-${allocation.ward_number}`}>
               <TableCell>{allocation.staff_number}</TableCell>
               <TableCell>{allocation.position}</TableCell>
               <TableCell>{allocation.shift}</TableCell>
               <TableCell>{allocation.ward_number}</TableCell>
-              {userEmail === 'admin@user.com' && (
-                <TableCell>
-                  <IconButton onClick={() => handleDialogOpen(allocation)}>
-                    <Edit />
-                  </IconButton>
-                  <IconButton onClick={() => handleDelete(allocation)}>
-                    <Delete />
-                  </IconButton>
-                </TableCell>
-              )}
+              <TableCell>
+                <IconButton onClick={() => handleDialogOpen(allocation)}>
+                  <Edit />
+                </IconButton>
+                <IconButton onClick={() => handleDelete(allocation)}>
+                  <Delete />
+                </IconButton>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
       <Dialog open={openDialog} onClose={handleDialogClose}>
-        <DialogTitle>{selectedAllocation ? 'Edit Allocation' : 'Add Allocation'}</DialogTitle>
+        <DialogTitle>{selectedAllocation ? 'Edit Staff Allocation' : 'Add Staff Allocation'}</DialogTitle>
         <DialogContent>
-          {error && <Alert severity="error">{error}</Alert>}
-          <TextField label="Staff Number" name="staff_number" value={formValues.staff_number} onChange={handleChange} fullWidth sx={{ marginTop: '5px' }} />
-          <TextField label="Position" name="position" value={formValues.position} onChange={handleChange} fullWidth sx={{ marginTop: '5px' }} />
-          <TextField label="Shift" name="shift" value={formValues.shift} onChange={handleChange} fullWidth sx={{ marginTop: '5px' }} />
-          <TextField label="Ward Number" name="ward_number" value={formValues.ward_number} onChange={handleChange} fullWidth sx={{ marginTop: '5px' }} />
+          <TextField
+            label="Staff Number"
+            name="staff_number"
+            value={formValues.staff_number}
+            onChange={handleChange}
+            fullWidth
+          />
+          <TextField
+            label="Position"
+            name="position"
+            value={formValues.position}
+            onChange={handleChange}
+            fullWidth
+          />
+          <TextField
+            label="Shift"
+            name="shift"
+            value={formValues.shift}
+            onChange={handleChange}
+            fullWidth
+          />
+          <TextField
+            label="Ward Number"
+            name="ward_number"
+            value={formValues.ward_number}
+            onChange={handleChange}
+            fullWidth
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialogClose}>Cancel</Button>

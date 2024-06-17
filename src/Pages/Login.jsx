@@ -37,7 +37,7 @@ export default function Login() {
       display: "flex", 
       alignItems: "center", 
       justifyContent: "center", 
-      backgroundImage: 'url("/1.jpg.jpg")', // Add your image path here
+      backgroundImage: 'url("/1.jpg.png")', // Add your image path here
       backgroundSize: "cover", 
       backgroundPosition: "center",
       bgcolor: "#FFFDD0" 

@@ -148,7 +148,7 @@ const Supplies = () => {
   return (
     <Container>
       <Typography variant="h4" gutterBottom>
-        Supplies
+        Suppliers
       </Typography>
       <Button variant="contained" color="primary" onClick={() => handleDialogOpen(null)}>
         Add Supply
