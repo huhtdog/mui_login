@@ -18,16 +18,15 @@ import {
 } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
 
-const Patients = () => {
-  const supabaseUrl = 'https://ytegbeireyjzmurrpbuz.supabase.co';
-  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl0ZWdiZWlyZXlqem11cnJwYnV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTgxMTQ4ODYsImV4cCI6MjAzMzY5MDg4Nn0.0R9UADmHOMauVXfpDiCBFLLlv7WWsgA8rf1I8IIaBig';
-  const supabase = createClient(supabaseUrl, supabaseKey);
+const supabaseUrl = 'https://ytegbeireyjzmurrpbuz.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl0ZWdiZWlyZXlqem11cnJwYnV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTgxMTQ4ODYsImV4cCI6MjAzMzY5MDg4Nn0.0R9UADmHOMauVXfpDiCBFLLlv7WWsgA8rf1I8IIaBig';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
+const Patients = () => {
   const [patients, setPatients] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [formValues, setFormValues] = useState({
-    patient_number: '',
     first_name: '',
     last_name: '',
     address: '',
@@ -60,10 +59,18 @@ const Patients = () => {
     setSelectedPatient(patient);
     setOpenDialog(true);
     if (patient) {
-      setFormValues({ ...patient });
+      setFormValues({
+        first_name: patient.first_name,
+        last_name: patient.last_name,
+        address: patient.address,
+        telephone_number: patient.telephone_number,
+        date_of_birth: patient.date_of_birth,
+        sex: patient.sex,
+        marital_status: patient.marital_status,
+        date_registered: patient.date_registered,
+      });
     } else {
       setFormValues({
-        patient_number: '',
         first_name: '',
         last_name: '',
         address: '',
@@ -86,11 +93,15 @@ const Patients = () => {
 
   const handleFormSubmit = async () => {
     try {
+      const valuesToSubmit = { ...formValues };
       if (!selectedPatient) {
+        // Remove patient_number from valuesToSubmit if it's a new patient
+        delete valuesToSubmit.patient_number;
+
         // Create new patient
         const { data, error } = await supabase
           .from('patients')
-          .insert([formValues]);
+          .insert([valuesToSubmit]);
         if (error) {
           throw error;
         }
@@ -98,7 +109,7 @@ const Patients = () => {
         // Update existing patient
         const { data, error } = await supabase
           .from('patients')
-          .update(formValues)
+          .update(valuesToSubmit)
           .eq('patient_number', selectedPatient.patient_number);
         if (error) {
           throw error;
@@ -114,7 +125,6 @@ const Patients = () => {
 
   const clearForm = () => {
     setFormValues({
-      patient_number: '',
       first_name: '',
       last_name: '',
       address: '',
@@ -128,11 +138,14 @@ const Patients = () => {
 
   const handleDelete = async (patient) => {
     try {
-      const { data, error } = await supabase.from('patients').delete().eq('patient_number', patient.patient_number);
+      const { data, error } = await supabase
+        .from('patients')
+        .delete()
+        .eq('patient_number', patient.patient_number);
       if (error) {
         throw error;
       }
-      await fetchPatients(); // Ensure to await the fetchPatients() function call
+      await fetchPatients();
     } catch (error) {
       console.error('Error deleting patient:', error.message);
     }
@@ -149,7 +162,6 @@ const Patients = () => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Patient Number</TableCell>
             <TableCell>First Name</TableCell>
             <TableCell>Last Name</TableCell>
             <TableCell>Address</TableCell>
@@ -164,7 +176,6 @@ const Patients = () => {
         <TableBody>
           {patients.map((patient) => (
             <TableRow key={patient.patient_number}>
-              <TableCell>{patient.patient_number}</TableCell>
               <TableCell>{patient.first_name}</TableCell>
               <TableCell>{patient.last_name}</TableCell>
               <TableCell>{patient.address}</TableCell>
@@ -188,25 +199,14 @@ const Patients = () => {
       <Dialog open={openDialog} onClose={handleDialogClose}>
         <DialogTitle>{selectedPatient ? 'Edit Patient' : 'Add Patient'}</DialogTitle>
         <DialogContent>
-          {/* Do not display or edit patient_number field */}
-          {!selectedPatient && (
-            <TextField
-              label="Patient Number"
-              name="patient_number"
-              value={formValues.patient_number}
-              onChange={handleChange}
-              fullWidth
-              disabled
-            />
-          )}
-          <TextField label="First Name" name="first_name" value={formValues.first_name} onChange={handleChange} fullWidth />
-          <TextField label="Last Name" name="last_name" value={formValues.last_name} onChange={handleChange} fullWidth />
-          <TextField label="Address" name="address" value={formValues.address} onChange={handleChange} fullWidth />
-          <TextField label="Telephone Number" name="telephone_number" value={formValues.telephone_number} onChange={handleChange} fullWidth />
-          <TextField label="Date of Birth" type="date" name="date_of_birth" value={formValues.date_of_birth} onChange={handleChange} fullWidth />
-          <TextField label="Sex" name="sex" value={formValues.sex} onChange={handleChange} fullWidth />
-          <TextField label="Marital Status" name="marital_status" value={formValues.marital_status} onChange={handleChange} fullWidth />
-          <TextField label="Date Registered" type="date" name="date_registered" value={formValues.date_registered} onChange={handleChange} fullWidth />
+          <TextField label="First Name" name="first_name" value={formValues.first_name} onChange={handleChange} fullWidth margin="dense" />
+          <TextField label="Last Name" name="last_name" value={formValues.last_name} onChange={handleChange} fullWidth margin="dense" />
+          <TextField label="Address" name="address" value={formValues.address} onChange={handleChange} fullWidth margin="dense" />
+          <TextField label="Telephone Number" name="telephone_number" value={formValues.telephone_number} onChange={handleChange} fullWidth margin="dense" />
+          <TextField label="Date of Birth" name="date_of_birth" type="date" value={formValues.date_of_birth} onChange={handleChange} fullWidth margin="dense" InputLabelProps={{ shrink: true }} />
+          <TextField label="Sex" name="sex" value={formValues.sex} onChange={handleChange} fullWidth margin="dense" />
+          <TextField label="Marital Status" name="marital_status" value={formValues.marital_status} onChange={handleChange} fullWidth margin="dense" />
+          <TextField label="Date Registered" name="date_registered" type="date" value={formValues.date_registered} onChange={handleChange} fullWidth margin="dense" InputLabelProps={{ shrink: true }} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialogClose}>Cancel</Button>
