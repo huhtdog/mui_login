@@ -1,169 +1,189 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
-import { Container, Typography, Button, TextField, Table, TableHead, TableRow, TableCell, TableBody, IconButton, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import {
+  Container,
+  Typography,
+  Button,
+  TextField,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
 
-function Supplier() {
-    const [suppliers, setSuppliers] = useState([]);
-    const [openDialog, setOpenDialog] = useState(false);
-    const [selectedSupplier, setSelectedSupplier] = useState(null);
-    const [formValues, setFormValues] = useState({
-        sup_name: '',
-        address_num: '',
-        phone_num: '',
-        fax_num: ''
+// Supabase credentials
+const supabaseUrl = 'https://ytegbeireyjzmurrpbuz.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl0ZWdiZWlyZXlqem11cnJwYnV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTgxMTQ4ODYsImV4cCI6MjAzMzY5MDg4Nn0.0R9UADmHOMauVXfpDiCBFLLlv7WWsgA8rf1I8IIaBig';
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+const SurgicalNonSurgicalItems = () => {
+  const [items, setItems] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [formValues, setFormValues] = useState({
+    item_number: '',
+    item_description: '',
+    quantity_in_stock: '',
+    reorder_level: '',
+  });
+
+  useEffect(() => {
+    fetchItems();
+  }, []);
+
+  const fetchItems = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('surgical_nonsurgical')
+        .select('*');
+      if (error) {
+        throw error;
+      }
+      setItems(data);
+    } catch (error) {
+      console.error('Error fetching items:', error.message);
+    }
+  };
+
+  const handleDialogOpen = (item) => {
+    setSelectedItem(item);
+    setOpenDialog(true);
+    if (item) {
+      setFormValues({
+        item_number: item.item_number,
+        item_description: item.item_description || '',
+        quantity_in_stock: item.quantity_in_stock || '',
+        reorder_level: item.reorder_level || '',
+      });
+    } else {
+      setFormValues({
+        item_number: '',
+        item_description: '',
+        quantity_in_stock: '',
+        reorder_level: '',
+      });
+    }
+  };
+
+  const handleDialogClose = () => {
+    setOpenDialog(false);
+  };
+
+  const handleChange = (e) => {
+    setFormValues({ ...formValues, [e.target.name]: e.target.value });
+  };
+
+  const handleFormSubmit = async () => {
+    try {
+      if (!selectedItem) {
+        // Create new item
+        const { data, error } = await supabase
+          .from('surgical_nonsurgical')
+          .insert(formValues);
+        if (error) {
+          throw error;
+        }
+      } else {
+        // Update existing item
+        const { data, error } = await supabase
+          .from('surgical_nonsurgical')
+          .update(formValues)
+          .eq('item_number', selectedItem.item_number);
+        if (error) {
+          throw error;
+        }
+      }
+      setOpenDialog(false);
+      fetchItems();
+      clearForm();
+    } catch (error) {
+      console.error('Error saving item:', error.message);
+    }
+  };
+
+  const clearForm = () => {
+    setFormValues({
+      item_number: '',
+      item_description: '',
+      quantity_in_stock: '',
+      reorder_level: '',
     });
+  };
 
-    // Initialize Supabase client
-    const supabaseUrl = 'https://ytegbeireyjzmurrpbuz.supabase.co'; // Replace with your Supabase URL
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl0ZWdiZWlyZXlqem11cnJwYnV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTgxMTQ4ODYsImV4cCI6MjAzMzY5MDg4Nn0.0R9UADmHOMauVXfpDiCBFLLlv7WWsgA8rf1I8IIaBig'; // Replace with your Supabase key
-    const supabase = createClient(supabaseUrl, supabaseKey);
+  const handleDelete = async (item) => {
+    try {
+      const { data, error } = await supabase
+        .from('surgical_nonsurgical')
+        .delete()
+        .eq('item_number', item.item_number);
+      if (error) {
+        throw error;
+      }
+      fetchItems();
+    } catch (error) {
+      console.error('Error deleting item:', error.message);
+    }
+  };
 
-    useEffect(() => {
-        fetchSuppliers();
-    }, []);
+  return (
+    <Container>
+      <Typography variant="h4" gutterBottom>
+        Surgical and Non-surgical Items
+      </Typography>
+      <Button variant="contained" color="primary" onClick={() => handleDialogOpen(null)}>
+        Add Item
+      </Button>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Item Number</TableCell>
+            <TableCell>Item Description</TableCell>
+            <TableCell>Quantity in Stock</TableCell>
+            <TableCell>Reorder Level</TableCell>
+            <TableCell>Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {items.map((item) => (
+            <TableRow key={item.item_number}>
+              <TableCell>{item.item_number}</TableCell>
+              <TableCell>{item.item_description}</TableCell>
+              <TableCell>{item.quantity_in_stock}</TableCell>
+              <TableCell>{item.reorder_level}</TableCell>
+              <TableCell>
+                <IconButton onClick={() => handleDialogOpen(item)} aria-label="edit">
+                  <Edit />
+                </IconButton>
+                <IconButton onClick={() => handleDelete(item)} aria-label="delete">
+                  <Delete />
+                </IconButton>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      <Dialog open={openDialog} onClose={handleDialogClose}>
+        <DialogTitle>{selectedItem ? 'Edit Item' : 'Add Item'}</DialogTitle>
+        <DialogContent>
+          <TextField label="Item Number" name="item_number" value={formValues.item_number} onChange={handleChange} fullWidth />
+          <TextField label="Item Description" name="item_description" value={formValues.item_description} onChange={handleChange} fullWidth />
+          <TextField label="Quantity in Stock" name="quantity_in_stock" value={formValues.quantity_in_stock} onChange={handleChange} fullWidth />
+          <TextField label="Reorder Level" name="reorder_level" value={formValues.reorder_level} onChange={handleChange} fullWidth />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose}>Cancel</Button>
+          <Button onClick={handleFormSubmit} color="primary">Save</Button>
+        </DialogActions>
+      </Dialog>
+    </Container>
+  );
+};
 
-    const fetchSuppliers = async () => {
-        try {
-            const { data, error } = await supabase.from('supplier').select('*');
-            if (error) {
-                throw error;
-            }
-            setSuppliers(data);
-        } catch (error) {
-            console.error('Error fetching suppliers:', error.message);
-        }
-    };
-
-    const handleDialogOpen = (supplier) => {
-        setSelectedSupplier(supplier);
-        setOpenDialog(true);
-        if (supplier) {
-            setFormValues({
-                sup_name: supplier.sup_name,
-                address_num: supplier.address_num,
-                phone_num: supplier.phone_num,
-                fax_num: supplier.fax_num
-            });
-        } else {
-            setFormValues({
-                sup_name: '',
-                address_num: '',
-                phone_num: '',
-                fax_num: ''
-            });
-        }
-    };
-
-    const handleDialogClose = () => {
-        setOpenDialog(false);
-    };
-
-    const handleChange = (e) => {
-        setFormValues({ ...formValues, [e.target.name]: e.target.value });
-    };
-
-    const handleFormSubmit = async () => {
-        try {
-            if (!selectedSupplier) {
-                // Create new supplier
-                const { data, error } = await supabase.from('supplier').insert([formValues]);
-                if (error) {
-                    throw error;
-                }
-            } else {
-                // Update existing supplier
-                const { data, error } = await supabase.from('supplier').update(formValues).eq('supplier_id', selectedSupplier.supplier_id);
-                if (error) {
-                    throw error;
-                }
-            }
-            setOpenDialog(false);
-            fetchSuppliers();
-            clearForm();
-        } catch (error) {
-            console.error('Error saving supplier:', error.message);
-        }
-    };
-
-    const clearForm = () => {
-        setFormValues({
-            sup_name: '',
-            address_num: '',
-            phone_num: '',
-            fax_num: ''
-        });
-    };
-
-    const handleDelete = async (supplier) => {
-        try {
-            const { data, error } = await supabase.from('supplier').delete().eq('supplier_id', supplier.supplier_id);
-            if (error) {
-                throw error;
-            }
-            fetchSuppliers();
-        } catch (error) {
-            console.error('Error deleting supplier:', error.message);
-        }
-    };
-
-    // Retrieve the authentication token from localStorage
-    const authTokenString = localStorage.getItem('sb-yavdfdgkadqwybjcpjyo-auth-token');
-    const authToken = JSON.parse(authTokenString);
-    const userEmail = authToken.user.email;
-
-    return (
-        <Container>
-            <Typography variant="h4" gutterBottom>
-                Suppliers
-            </Typography>
-            <Button variant="contained" color="primary" onClick={() => handleDialogOpen(null)}>Add Supplier</Button>
-            <Table>
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Supplier ID</TableCell>
-                        <TableCell>Supplier Name</TableCell>
-                        <TableCell>Address</TableCell>
-                        <TableCell>Phone Number</TableCell>
-                        <TableCell>Fax Number</TableCell>
-                        {userEmail === 'admin@user.com' && (
-                            <TableCell>Actions</TableCell>
-                        )}
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {suppliers.map((supplier) => (
-                        <TableRow key={supplier.supplier_id}>
-                            <TableCell>{supplier.supplier_id}</TableCell>
-                            <TableCell>{supplier.sup_name}</TableCell>
-                            <TableCell>{supplier.address_num}</TableCell>
-                            <TableCell>{supplier.phone_num}</TableCell>
-                            <TableCell>{supplier.fax_num}</TableCell>
-                            {userEmail === 'admin@user.com' && (
-                                <TableCell>
-                                    <IconButton onClick={() => handleDialogOpen(supplier)}><Edit /></IconButton>
-                                    <IconButton onClick={() => handleDelete(supplier)}><Delete /></IconButton>
-                                </TableCell>
-                            )}
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-            <Dialog open={openDialog} onClose={handleDialogClose}>
-                <DialogTitle>{selectedSupplier ? 'Edit Supplier' : 'Add Supplier'}</DialogTitle>
-                <DialogContent>
-                    <TextField label="Supplier Name" name="sup_name" value={formValues.sup_name} onChange={handleChange} fullWidth sx={{ marginTop: '5px' }} />
-                    <TextField label="Address" name="address_num" value={formValues.address_num} onChange={handleChange} fullWidth sx={{ marginTop: '5px' }} />
-                    <TextField label="Phone Number" name="phone_num" value={formValues.phone_num} onChange={handleChange} fullWidth sx={{ marginTop: '5px' }} />
-                    <TextField label="Fax Number" name="fax_num" value={formValues.fax_num} onChange={handleChange} fullWidth sx={{ marginTop: '5px' }} />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleDialogClose}>Cancel</Button>
-                    <Button onClick={handleFormSubmit} color="primary">Save</Button>
-                </DialogActions>
-            </Dialog>
-        </Container>
-    );
-}
-
-export default Supplier;
+export default SurgicalNonSurgicalItems;

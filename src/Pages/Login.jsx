@@ -32,20 +32,21 @@ export default function Login() {
   }
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh',
-        backgroundColor: '##FFFDD0', // Black background color
-        padding: '0 20px', // Optional: Add padding to the sides
-      }}
-    >
-      <Card sx={{ width: '100%', maxWidth: 400, boxShadow: 3 }}>
-        <CardContent sx={{ p: 4, backgroundColor: 'black', color: 'black' }}>
-          <Box sx={{ textAlign: 'center', mb: 2 }}>
-            <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'blue' }}>Wellmeadows Hospital</Typography>
+    <Container maxWidth="100px" sx={{ 
+      minHeight: "100vh", 
+      display: "flex", 
+      alignItems: "center", 
+      justifyContent: "center", 
+      backgroundImage: 'url("/1.jpg.png")', // Add your image path here
+      backgroundSize: "cover", 
+      backgroundPosition: "center",
+      bgcolor: "#FFFDD0" 
+    }}>
+      <Card sx={{ width: "100%", maxWidth: 400, boxShadow: 3 }}>
+        <CardContent sx={{ p: 4, backgroundColor: "#fff", color: "#000" }}>
+          <Box sx={{ textAlign: "center", mb: 2 }}>
+            <Typography variant="h4" sx={{ fontWeight: "bold", color: "#C576EE" }}>Wellmeadows Hospital</Typography>
+            <Typography variant="body1" sx={{ mt: 1, color: "#000" }}>Please enter your details to continue</Typography>
           </Box>
           {isError && (
             <Box sx={{ mb: 2 }}>
@@ -57,16 +58,16 @@ export default function Login() {
               error={isError}
               helperText={isError ? "Invalid Email or Password" : ""}
               fullWidth
-              label="Email"
+              label="Username"
               variant="outlined"
               onChange={(e) => setEmail(e.target.value)}
               sx={{
-                '& .MuiInputBase-input': { color: 'white' },
-                '& .MuiInputLabel-root': { color: 'white' },
+                '& .MuiInputBase-input': { color: '#000' },
+                '& .MuiInputLabel-root': { color: '#000' },
                 '& .MuiOutlinedInput-root': {
-                  '& fieldset': { borderColor: 'white' },
-                  '&:hover fieldset': { borderColor: 'blue' },
-                  '&.Mui-focused fieldset': { borderColor: 'blue' },
+                  '& fieldset': { borderColor: '#ccc' },
+                  '&:hover fieldset': { borderColor: '#007bff' },
+                  '&.Mui-focused fieldset': { borderColor: '#007bff' },
                 }
               }}
             />
@@ -83,20 +84,20 @@ export default function Login() {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton onClick={() => setShowPassword(!showPassword)} edge="end" sx={{ color: 'white' }}>
+                    <IconButton onClick={() => setShowPassword(!showPassword)} edge="end" sx={{ color: '#000' }}>
                       {showPassword ? <Visibility /> : <VisibilityOff />}
                     </IconButton>
                   </InputAdornment>
                 ),
-                sx: { color: 'white' }
+                sx: { color: '#000' }
               }}
               sx={{
-                '& .MuiInputBase-input': { color: 'white' },
-                '& .MuiInputLabel-root': { color: 'white' },
+                '& .MuiInputBase-input': { color: '#000' },
+                '& .MuiInputLabel-root': { color: '#000' },
                 '& .MuiOutlinedInput-root': {
-                  '& fieldset': { borderColor: 'white' },
-                  '&:hover fieldset': { borderColor: 'blue' },
-                  '&.Mui-focused fieldset': { borderColor: 'blue' },
+                  '& fieldset': { borderColor: '#ccc' },
+                  '&:hover fieldset': { borderColor: '#007bff' },
+                  '&.Mui-focused fieldset': { borderColor: '#007bff' },
                 }
               }}
             />
@@ -108,12 +109,12 @@ export default function Login() {
               fullWidth
               variant="contained"
               endIcon={<LoginTwoToneIcon />}
-              sx={{ py: 1, backgroundColor: 'blue', color: 'white', '&:hover': { backgroundColor: 'skyblue' } }}
+              sx={{ py: 1, backgroundColor: '#007bff', color: '#fff', '&:hover': { backgroundColor: '#00b0ff' } }}
             >
-              Login
+              Sign in
             </Button>
           </Box>
-          <Box sx={{ textAlign: 'center', my: 2 }}>
+          <Box sx={{ textAlign: "center", my: 2 }}>
             <Typography variant="body1">or</Typography>
           </Box>
           <Box sx={{ mb: 2 }}>
@@ -126,19 +127,21 @@ export default function Login() {
               endIcon={<PersonAddAltRoundedIcon />}
               sx={{
                 py: 1,
-                color: 'white',
-                borderColor: 'white',
+                color: '#000',
+                borderColor: '#ccc',
                 '&:hover': {
                   backgroundColor: 'rgba(0, 128, 0, 0.1)',
-                  borderColor: 'blue'
+                  borderColor: '#007bff'
                 }
               }}
             >
-              Sign up
+              Create Account
             </Button>
+          </Box>
+          <Box sx={{ textAlign: "center", mt: 2 }}>
           </Box>
         </CardContent>
       </Card>
-    </Box>
+    </Container>
   );
 }

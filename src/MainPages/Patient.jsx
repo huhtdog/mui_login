@@ -27,6 +27,7 @@ const Patients = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [formValues, setFormValues] = useState({
+    patient_number: '', // Include patient_number in formValues
     first_name: '',
     last_name: '',
     address: '',
@@ -60,6 +61,7 @@ const Patients = () => {
     setOpenDialog(true);
     if (patient) {
       setFormValues({
+        patient_number: patient.patient_number, // Set patient_number when editing
         first_name: patient.first_name,
         last_name: patient.last_name,
         address: patient.address,
@@ -71,6 +73,7 @@ const Patients = () => {
       });
     } else {
       setFormValues({
+        patient_number: '', // Reset patient_number when adding new patient
         first_name: '',
         last_name: '',
         address: '',
@@ -125,6 +128,7 @@ const Patients = () => {
 
   const clearForm = () => {
     setFormValues({
+      patient_number: '', // Reset patient_number after form submission
       first_name: '',
       last_name: '',
       address: '',
@@ -162,6 +166,7 @@ const Patients = () => {
       <Table>
         <TableHead>
           <TableRow>
+            <TableCell>Patient Number</TableCell> {/* Display Patient Number */}
             <TableCell>First Name</TableCell>
             <TableCell>Last Name</TableCell>
             <TableCell>Address</TableCell>
@@ -176,6 +181,7 @@ const Patients = () => {
         <TableBody>
           {patients.map((patient) => (
             <TableRow key={patient.patient_number}>
+              <TableCell>{patient.patient_number}</TableCell> {/* Display Patient Number */}
               <TableCell>{patient.first_name}</TableCell>
               <TableCell>{patient.last_name}</TableCell>
               <TableCell>{patient.address}</TableCell>

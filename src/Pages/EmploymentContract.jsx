@@ -18,11 +18,11 @@ import {
 } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
 
-const EmploymentContracts = () => {
-  const supabaseUrl = 'https://ytegbeireyjzmurrpbuz.supabase.co';
-  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl0ZWdiZWlyZXlqem11cnJwYnV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTgxMTQ4ODYsImV4cCI6MjAzMzY5MDg4Nn0.0R9UADmHOMauVXfpDiCBFLLlv7WWsgA8rf1I8IIaBig';
-  const supabase = createClient(supabaseUrl, supabaseKey);
+const supabaseUrl = 'https://ytegbeireyjzmurrpbuz.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl0ZWdiZWlyZXlqem11cnJwYnV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTgxMTQ4ODYsImV4cCI6MjAzMzY5MDg4Nn0.0R9UADmHOMauVXfpDiCBFLLlv7WWsgA8rf1I8IIaBig';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
+const EmploymentContracts = () => {
   const [contracts, setContracts] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedContract, setSelectedContract] = useState(null);
@@ -85,7 +85,7 @@ const EmploymentContracts = () => {
         // Create new contract
         const { data, error } = await supabase
           .from('employmentcontract')
-          .insert([formValues]);
+          .insert(formValues);
         if (error) {
           throw error;
         }
@@ -94,7 +94,7 @@ const EmploymentContracts = () => {
         const { data, error } = await supabase
           .from('employmentcontract')
           .update(formValues)
-          .eq('contract_id', selectedContract.contract_id);
+          .eq('staff_number', selectedContract.staff_number); // Assuming staff_number is unique for each contract
         if (error) {
           throw error;
         }
@@ -121,7 +121,7 @@ const EmploymentContracts = () => {
       const { data, error } = await supabase
         .from('employmentcontract')
         .delete()
-        .eq('contract_id', contract.contract_id);
+        .eq('staff_number', contract.staff_number); // Assuming staff_number is unique for each contract
       if (error) {
         throw error;
       }
@@ -142,7 +142,6 @@ const EmploymentContracts = () => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Contract ID</TableCell>
             <TableCell>Staff Number</TableCell>
             <TableCell>Hours Worked Per Week</TableCell>
             <TableCell>Contract Type</TableCell>
@@ -152,8 +151,7 @@ const EmploymentContracts = () => {
         </TableHead>
         <TableBody>
           {contracts.map((contract) => (
-            <TableRow key={contract.contract_id}>
-              <TableCell>{contract.contract_id}</TableCell>
+            <TableRow key={contract.staff_number}>
               <TableCell>{contract.staff_number}</TableCell>
               <TableCell>{contract.hours_worked_per_week}</TableCell>
               <TableCell>{contract.contract_type}</TableCell>
