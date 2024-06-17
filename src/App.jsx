@@ -52,7 +52,8 @@ const router = createBrowserRouter([
         },
         {
           path: "patient",
-          element: <Patient />
+          element: <Patient />,
+          
         },
         {
           path: "patientAllocation",
