@@ -15,6 +15,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Snackbar,
 } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
 
@@ -38,6 +39,12 @@ const Staff = () => {
     current_salary: '',
     salary_scale: '',
   });
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  // Retrieve the authentication token from localStorage
+  const authTokenString = localStorage.getItem('sb-yavdfdgkadqwybjcpjyo-auth-token');
+  const authToken = JSON.parse(authTokenString);
+  const userEmail = authToken?.user?.email;
 
   useEffect(() => {
     fetchStaffs();
@@ -58,6 +65,10 @@ const Staff = () => {
   };
 
   const handleDialogOpen = (staff) => {
+    if (userEmail !== 'admin@user.com') {
+      setSnackbarOpen(true);
+      return;
+    }
     setSelectedStaff(staff);
     setOpenDialog(true);
     if (staff) {
@@ -98,6 +109,10 @@ const Staff = () => {
   };
 
   const handleFormSubmit = async () => {
+    if (userEmail !== 'admin@user.com') {
+      setSnackbarOpen(true);
+      return;
+    }
     try {
       if (!selectedStaff) {
         // Create new staff
@@ -141,6 +156,10 @@ const Staff = () => {
   };
 
   const handleDelete = async (staff) => {
+    if (userEmail !== 'admin@user.com') {
+      setSnackbarOpen(true);
+      return;
+    }
     try {
       const { data, error } = await supabase
         .from('staff')
@@ -153,6 +172,10 @@ const Staff = () => {
     } catch (error) {
       console.error('Error deleting staff:', error.message);
     }
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -233,6 +256,12 @@ const Staff = () => {
           <Button onClick={handleFormSubmit} color="primary">Save</Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        message="You do not have permission to perform this action."
+      />
     </Container>
   );
 };

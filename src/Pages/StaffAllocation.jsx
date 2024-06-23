@@ -15,6 +15,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Snackbar,
 } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
 
@@ -32,6 +33,12 @@ const StaffAllocation = () => {
     shift: '',
     ward_number: '',
   });
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  // Retrieve the authentication token from localStorage
+  const authTokenString = localStorage.getItem('sb-yavdfdgkadqwybjcpjyo-auth-token');
+  const authToken = JSON.parse(authTokenString);
+  const userEmail = authToken?.user?.email;
 
   useEffect(() => {
     fetchStaffAllocations();
@@ -52,6 +59,10 @@ const StaffAllocation = () => {
   };
 
   const handleDialogOpen = (allocation) => {
+    if (userEmail !== 'admin@user.com') {
+      setSnackbarOpen(true);
+      return;
+    }
     setSelectedAllocation(allocation);
     setOpenDialog(true);
     if (allocation) {
@@ -80,6 +91,10 @@ const StaffAllocation = () => {
   };
 
   const handleFormSubmit = async () => {
+    if (userEmail !== 'admin@user.com') {
+      setSnackbarOpen(true);
+      return;
+    }
     try {
       if (!selectedAllocation) {
         // Create new staff allocation
@@ -118,6 +133,10 @@ const StaffAllocation = () => {
   };
 
   const handleDelete = async (allocation) => {
+    if (userEmail !== 'admin@user.com') {
+      setSnackbarOpen(true);
+      return;
+    }
     try {
       const { data, error } = await supabase
         .from('staffallocation')
@@ -131,6 +150,10 @@ const StaffAllocation = () => {
     } catch (error) {
       console.error('Error deleting staff allocation:', error.message);
     }
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -207,6 +230,12 @@ const StaffAllocation = () => {
           <Button onClick={handleFormSubmit} color="primary">Save</Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        message="Only the admin can modify this"
+      />
     </Container>
   );
 };

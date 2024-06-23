@@ -90,5 +90,13 @@ export const mainListItems = (
                 <ListItemText primary="Employment Contract" />
             </ListItemButton>
         </Link> 
+        <Link to="/dashboard/localdoctors" style={styles}>
+            <ListItemButton>
+                <ListItemIcon>
+                    <PeopleIcon /> {/* Use the new icon here */}
+                </ListItemIcon>
+                <ListItemText primary="Local Doctors" />
+            </ListItemButton>
+        </Link> 
     </React.Fragment>
 );

@@ -74,21 +74,6 @@ export default function Main() {
                     </Grid>
                     {/* Second Row */}
                     <Grid item xs={12} md={6}>
-                        <Link to="/dashboard/main/patientAllocation" style={{ textDecoration: 'none' }}>
-                            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
-                            <Button
-    variant="contained"
-    sx={{ ...buttonStyles, bgcolor: '#20B2AA' }}
-    fullWidth
->
-    <PatientAllocationIcon sx={iconStyles} />
-    <PatientAllocationIcon  /> Patient Allocation
-</Button>
-
-                            </Paper>
-                        </Link>
-                    </Grid>
-                    <Grid item xs={12} md={6}>
                         <Link to="/dashboard/main/appointment" style={{ textDecoration: 'none' }}>
                             <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
                             <Button

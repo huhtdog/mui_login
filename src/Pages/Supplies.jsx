@@ -22,6 +22,7 @@ import { Edit, Delete } from '@mui/icons-material';
 
 const Supplies = () => {
   const [supplies, setSupplies] = useState([]);
+  const [filteredSupplies, setFilteredSupplies] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedSupply, setSelectedSupply] = useState(null);
   const [formValues, setFormValues] = useState({
@@ -31,6 +32,7 @@ const Supplies = () => {
     fax_num: '',
   });
   const [error, setError] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const supabaseUrl = 'https://ytegbeireyjzmurrpbuz.supabase.co';
@@ -46,6 +48,10 @@ const Supplies = () => {
     fetchSupplies();
   }, []);
 
+  useEffect(() => {
+    filterSupplies();
+  }, [searchQuery, supplies]);
+
   const fetchSupplies = async () => {
     try {
       const { data, error } = await supabase.from('supplies').select('*');
@@ -54,6 +60,22 @@ const Supplies = () => {
     } catch (error) {
       console.error('Error fetching supplies:', error.message);
     }
+  };
+
+  const filterSupplies = () => {
+    const query = searchQuery.toLowerCase();
+    const filtered = supplies.filter(
+      (supply) =>
+        supply.sup_name.toLowerCase().includes(query) ||
+        supply.address_num.toLowerCase().includes(query) ||
+        supply.phone_num.toLowerCase().includes(query) ||
+        supply.fax_num.toLowerCase().includes(query)
+    );
+    setFilteredSupplies(filtered);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
   };
 
   const handleDialogOpen = (supply) => {
@@ -150,6 +172,13 @@ const Supplies = () => {
       <Typography variant="h4" gutterBottom>
         Suppliers
       </Typography>
+      <TextField
+        label="Search Supplies"
+        value={searchQuery}
+        onChange={handleSearchChange}
+        fullWidth
+        margin="normal"
+      />
       <Button variant="contained" color="primary" onClick={() => handleDialogOpen(null)}>
         Add Supply
       </Button>
@@ -165,7 +194,7 @@ const Supplies = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {supplies.map((supply) => (
+          {filteredSupplies.map((supply) => (
             <TableRow key={supply.supplier_id}>
               <TableCell>{supply.supplier_id}</TableCell>
               <TableCell>{supply.sup_name}</TableCell>

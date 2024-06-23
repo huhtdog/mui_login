@@ -83,6 +83,12 @@ const WardManagement = () => {
 
   const handleFormSubmit = async () => {
     try {
+      // Check if the total number of beds is greater than 14
+      if (parseInt(formValues.total_num_of_beds, 10) > 14) {
+        setError('Error: Beds are full. The total number of beds cannot exceed 14.');
+        return;
+      }
+
       const { data: existingData, error: fetchError } = await supabase
         .from('ward')
         .select('*')

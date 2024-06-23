@@ -1,6 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
-import { Container, Typography, Button, TextField, Table, TableHead, TableRow, TableCell, TableBody, IconButton, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import {
+    Container,
+    Typography,
+    Button,
+    TextField,
+    Table,
+    TableHead,
+    TableRow,
+    TableCell,
+    TableBody,
+    IconButton,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Snackbar,
+} from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
 
 function WorkExperience() {
@@ -14,11 +30,17 @@ function WorkExperience() {
         finish_date: '',
         organization: ''
     });
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
 
     // Initialize Supabase client
     const supabaseUrl = 'https://ytegbeireyjzmurrpbuz.supabase.co'; // Replace with your Supabase URL
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl0ZWdiZWlyZXlqem11cnJwYnV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTgxMTQ4ODYsImV4cCI6MjAzMzY5MDg4Nn0.0R9UADmHOMauVXfpDiCBFLLlv7WWsgA8rf1I8IIaBig'; // Replace with your Supabase key
     const supabase = createClient(supabaseUrl, supabaseKey);
+
+    // Retrieve the authentication token from localStorage
+    const authTokenString = localStorage.getItem('sb-yavdfdgkadqwybjcpjyo-auth-token');
+    const authToken = JSON.parse(authTokenString);
+    const userEmail = authToken?.user?.email;
 
     useEffect(() => {
         fetchExperiences();
@@ -37,6 +59,10 @@ function WorkExperience() {
     };
 
     const handleDialogOpen = (experience) => {
+        if (userEmail !== 'admin@user.com') {
+            setSnackbarOpen(true);
+            return;
+        }
         setSelectedExperience(experience);
         setOpenDialog(true);
         if (experience) {
@@ -67,6 +93,10 @@ function WorkExperience() {
     };
 
     const handleFormSubmit = async () => {
+        if (userEmail !== 'admin@user.com') {
+            setSnackbarOpen(true);
+            return;
+        }
         try {
             if (!selectedExperience) {
                 // Create new experience
@@ -100,6 +130,10 @@ function WorkExperience() {
     };
 
     const handleDelete = async (experience) => {
+        if (userEmail !== 'admin@user.com') {
+            setSnackbarOpen(true);
+            return;
+        }
         try {
             const { data, error } = await supabase.from('workexperience').delete().eq('experience_id', experience.experience_id);
             if (error) {
@@ -111,10 +145,9 @@ function WorkExperience() {
         }
     };
 
-    // Retrieve the authentication token from localStorage
-    const authTokenString = localStorage.getItem('sb-yavdfdgkadqwybjcpjyo-auth-token');
-    const authToken = JSON.parse(authTokenString);
-    const userEmail = authToken.user.email;
+    const handleSnackbarClose = () => {
+        setSnackbarOpen(false);
+    };
 
     return (
         <Container>
@@ -167,6 +200,12 @@ function WorkExperience() {
                     <Button onClick={handleFormSubmit} color="primary">Save</Button>
                 </DialogActions>
             </Dialog>
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={6000}
+                onClose={handleSnackbarClose}
+                message="Only the admin can modify this"
+            />
         </Container>
     );
 }

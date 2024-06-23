@@ -15,6 +15,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Snackbar,
 } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
 
@@ -32,6 +33,12 @@ const Qualification = () => {
     type: '',
     name_of_institution: '',
   });
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  // Retrieve the authentication token from localStorage
+  const authTokenString = localStorage.getItem('sb-yavdfdgkadqwybjcpjyo-auth-token');
+  const authToken = JSON.parse(authTokenString);
+  const userEmail = authToken?.user?.email;
 
   useEffect(() => {
     fetchQualifications();
@@ -52,6 +59,10 @@ const Qualification = () => {
   };
 
   const handleDialogOpen = (qualification) => {
+    if (userEmail !== 'admin@user.com') {
+      setSnackbarOpen(true);
+      return;
+    }
     setSelectedQualification(qualification);
     setOpenDialog(true);
     if (qualification) {
@@ -81,6 +92,10 @@ const Qualification = () => {
   };
 
   const handleFormSubmit = async () => {
+    if (userEmail !== 'admin@user.com') {
+      setSnackbarOpen(true);
+      return;
+    }
     try {
       if (!selectedQualification) {
         // Create new qualification
@@ -125,6 +140,10 @@ const Qualification = () => {
   };
 
   const handleDelete = async (qualification) => {
+    if (userEmail !== 'admin@user.com') {
+      setSnackbarOpen(true);
+      return;
+    }
     try {
       const { data, error } = await supabase
         .from('qualifications')
@@ -141,6 +160,10 @@ const Qualification = () => {
     } catch (error) {
       console.error('Error deleting qualification:', error.message);
     }
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -193,6 +216,12 @@ const Qualification = () => {
           <Button onClick={handleFormSubmit} color="primary">Save</Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        message="Only the admin can modify this"
+      />
     </Container>
   );
 };

@@ -15,6 +15,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Snackbar,
 } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
 
@@ -25,6 +26,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 const SurgicalNonSurgicalItems = () => {
   const [items, setItems] = useState([]);
+  const [filteredItems, setFilteredItems] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [formValues, setFormValues] = useState({
@@ -33,10 +35,31 @@ const SurgicalNonSurgicalItems = () => {
     quantity_in_stock: '',
     reorder_level: '',
   });
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [notification, setNotification] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Retrieve the authentication token from localStorage
+  const authTokenString = localStorage.getItem('sb-yavdfdgkadqwybjcpjyo-auth-token');
+  const authToken = JSON.parse(authTokenString);
+  const userEmail = authToken?.user?.email;
 
   useEffect(() => {
     fetchItems();
   }, []);
+
+  useEffect(() => {
+    // Filter items based on search term
+    if (searchTerm.trim() === '') {
+      setFilteredItems(items);
+    } else {
+      const filtered = items.filter(item =>
+        item.item_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.item_description.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredItems(filtered);
+    }
+  }, [searchTerm, items]);
 
   const fetchItems = async () => {
     try {
@@ -47,12 +70,17 @@ const SurgicalNonSurgicalItems = () => {
         throw error;
       }
       setItems(data);
+      setFilteredItems(data); // Initialize filtered items with all items
     } catch (error) {
       console.error('Error fetching items:', error.message);
     }
   };
 
   const handleDialogOpen = (item) => {
+    if (userEmail !== 'admin@user.com') {
+      setSnackbarOpen(true);
+      return;
+    }
     setSelectedItem(item);
     setOpenDialog(true);
     if (item) {
@@ -81,7 +109,12 @@ const SurgicalNonSurgicalItems = () => {
   };
 
   const handleFormSubmit = async () => {
+    if (userEmail !== 'admin@user.com') {
+      setSnackbarOpen(true);
+      return;
+    }
     try {
+      let notificationMessage = '';
       if (!selectedItem) {
         // Create new item
         const { data, error } = await supabase
@@ -91,6 +124,11 @@ const SurgicalNonSurgicalItems = () => {
           throw error;
         }
       } else {
+        // Check if stock decreased
+        if (selectedItem.quantity_in_stock > formValues.quantity_in_stock) {
+          notificationMessage = `The stock of item ${formValues.item_number} has been decreased.`;
+        }
+
         // Update existing item
         const { data, error } = await supabase
           .from('surgical_nonsurgical')
@@ -103,6 +141,10 @@ const SurgicalNonSurgicalItems = () => {
       setOpenDialog(false);
       fetchItems();
       clearForm();
+      if (notificationMessage) {
+        setNotification(notificationMessage);
+        setSnackbarOpen(true);
+      }
     } catch (error) {
       console.error('Error saving item:', error.message);
     }
@@ -118,6 +160,10 @@ const SurgicalNonSurgicalItems = () => {
   };
 
   const handleDelete = async (item) => {
+    if (userEmail !== 'admin@user.com') {
+      setSnackbarOpen(true);
+      return;
+    }
     try {
       const { data, error } = await supabase
         .from('surgical_nonsurgical')
@@ -132,11 +178,28 @@ const SurgicalNonSurgicalItems = () => {
     }
   };
 
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+    setNotification('');
+  };
+
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
   return (
     <Container>
       <Typography variant="h4" gutterBottom>
         Surgical and Non-surgical Items
       </Typography>
+      <TextField
+        label="Search"
+        variant="outlined"
+        value={searchTerm}
+        onChange={handleSearch}
+        fullWidth
+        style={{ marginBottom: '1rem' }}
+      />
       <Button variant="contained" color="primary" onClick={() => handleDialogOpen(null)}>
         Add Item
       </Button>
@@ -151,7 +214,7 @@ const SurgicalNonSurgicalItems = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {items.map((item) => (
+          {filteredItems.map((item) => (
             <TableRow key={item.item_number}>
               <TableCell>{item.item_number}</TableCell>
               <TableCell>{item.item_description}</TableCell>
@@ -182,6 +245,12 @@ const SurgicalNonSurgicalItems = () => {
           <Button onClick={handleFormSubmit} color="primary">Save</Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        message={notification || "Only the admin can modify this"}
+      />
     </Container>
   );
 };

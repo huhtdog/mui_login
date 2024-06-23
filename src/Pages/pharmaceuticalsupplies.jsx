@@ -1,10 +1,3 @@
-// import { Paper } from "@mui/material"
-// export default function PharmaceuticalSupplies() {
-//   return (
-//     <Paper sx={{p:30}}>shessh21312312</Paper>
-//   )     
-// }
-
 import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import {
@@ -22,6 +15,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Snackbar,
 } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
 
@@ -39,6 +33,13 @@ const PharmaceuticalSupplies = () => {
     method_of_administration: '',
     cost_per_unit: '',
   });
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Retrieve the authentication token from localStorage
+  const authTokenString = localStorage.getItem('sb-yavdfdgkadqwybjcpjyo-auth-token');
+  const authToken = JSON.parse(authTokenString);
+  const userEmail = authToken?.user?.email;
 
   useEffect(() => {
     fetchSupplies();
@@ -59,6 +60,10 @@ const PharmaceuticalSupplies = () => {
   };
 
   const handleDialogOpen = (supply) => {
+    if (userEmail !== 'admin@user.com') {
+      setSnackbarOpen(true);
+      return;
+    }
     setSelectedSupply(supply);
     setOpenDialog(true);
     if (supply) {
@@ -87,6 +92,10 @@ const PharmaceuticalSupplies = () => {
   };
 
   const handleFormSubmit = async () => {
+    if (userEmail !== 'admin@user.com') {
+      setSnackbarOpen(true);
+      return;
+    }
     try {
       if (!selectedSupply) {
         // Create new supply
@@ -124,6 +133,10 @@ const PharmaceuticalSupplies = () => {
   };
 
   const handleDelete = async (supply) => {
+    if (userEmail !== 'admin@user.com') {
+      setSnackbarOpen(true);
+      return;
+    }
     try {
       const { error } = await supabase
         .from('pharmaceuticalsupplies')
@@ -138,11 +151,32 @@ const PharmaceuticalSupplies = () => {
     }
   };
 
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  // Filter supplies based on search term
+  const filteredSupplies = supplies.filter((supply) =>
+    supply.drug_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <Container>
       <Typography variant="h4" gutterBottom>
         Pharmaceutical Supplies
       </Typography>
+      <TextField
+        label="Search"
+        variant="outlined"
+        value={searchTerm}
+        onChange={handleSearchChange}
+        fullWidth
+        style={{ marginBottom: 20 }}
+      />
       <Button variant="contained" color="primary" onClick={() => handleDialogOpen(null)}>
         Add Supply
       </Button>
@@ -157,7 +191,7 @@ const PharmaceuticalSupplies = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {supplies.map((supply) => (
+          {filteredSupplies.map((supply) => (
             <TableRow key={supply.drug_number}>
               <TableCell>{supply.drug_name}</TableCell>
               <TableCell>{supply.dosage}</TableCell>
@@ -188,6 +222,12 @@ const PharmaceuticalSupplies = () => {
           <Button onClick={handleFormSubmit} color="primary">Save</Button>
         </DialogActions>
       </Dialog>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        message="Only the admin can modify this"
+      />
     </Container>
   );
 };

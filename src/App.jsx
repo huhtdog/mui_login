@@ -11,7 +11,6 @@ import StaffAllocation from './Pages/StaffAllocation';
 import Qualification from './Pages/Qualification';
 import Staff from './MainPages/Staff';
 import Patient from './MainPages/Patient';
-import PatientAllocation from './MainPages/PatientAllocation';
 import Appointment from './MainPages/Appointment';
 import Ward from './MainPages/Ward';
 import WardRequisition from './MainPages/WardRequisition';
@@ -23,6 +22,7 @@ import Allpatient from './Patients/Allpatient';
 import Inpatient from './Patients/Inpatient';
 import Outpatient from './Patients/Outpatient';
 import Waitinglist from './Patients/Waitinglist';
+import Localdoctors from './MainPages/localdoctor';
 
 
 const router = createBrowserRouter([
@@ -71,10 +71,7 @@ const router = createBrowserRouter([
               }
             ]
           },
-          {
-            path: "patientAllocation",
-            element: <PatientAllocation />
-          },
+
           {
             path: "appointment",
             element: <Appointment />
@@ -124,6 +121,10 @@ const router = createBrowserRouter([
       {
         path: "employmentContract",
         element: <EmploymentContract />
+      },
+      {
+        path: "localdoctors",
+        element: <Localdoctors />
       }
     ]
   }
